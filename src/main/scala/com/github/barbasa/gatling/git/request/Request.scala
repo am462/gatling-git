@@ -188,7 +188,7 @@ case class Push(url: URIish, user: String)(implicit val conf: GatlingGitConfigur
     git.push
       .setAuthenticationMethod(url, cb)
       .setRemote(url.toString)
-      .add("HEAD:refs/for/master")
+      .add("master")
       .call()
   }
 }
