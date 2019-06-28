@@ -46,7 +46,8 @@ class GitRequestAction(
           req.send
           (Response(OK), req.name, None)
         } catch {
-          case e: Exception => (Response(Fail), req.name, Some(e.getMessage))
+          case e: Exception =>
+            (Response(Fail), req.name, Some(s"${e.getMessage} - ${e.getCause}"))
         }
       case Failure(message) => (Response(Fail), "Unknown", Some(message))
     }
