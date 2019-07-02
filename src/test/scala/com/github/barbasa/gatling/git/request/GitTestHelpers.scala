@@ -1,6 +1,7 @@
 package com.github.barbasa.gatling.git.request
 
 import java.io.File
+import java.nio.file.Files
 
 import com.github.barbasa.gatling.git.{
   CommandsConfiguration,
@@ -14,7 +15,7 @@ import org.eclipse.jgit.api.{Git => JGit}
 trait GitTestHelpers {
   var testGitRepo: JGit = _
 
-  val tempBase: String        = "/tmp"
+  val tempBase: String        = Files.createTempDirectory("gatlinGitTests").toFile.getAbsolutePath
   val testUser: String        = "testUser"
   val testRepo: String        = "testRepo"
   val workTreeDirectory: File = new File(s"$tempBase/$testUser/$testRepo")
