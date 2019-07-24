@@ -188,7 +188,10 @@ case class Pull(url: URIish, user: String)(implicit val conf: GatlingGitConfigur
   }
 }
 
-case class Push(url: URIish, user: String, refSpec: String = HeadToMasterRefSpec.value)(
+case class Push(url: URIish,
+                user: String,
+                refSpec: String = HeadToMasterRefSpec.value,
+                commitBuilder: CommitBuilder = Push.defaultCommitBuilder)(
     implicit val conf: GatlingGitConfiguration
 ) extends Request {
   initRepo()
@@ -200,14 +203,8 @@ case class Push(url: URIish, user: String, refSpec: String = HeadToMasterRefSpec
     import PimpedGitTransportCommand._
     val git = new Git(repository)
 
-    val commitBuilder = new CommitBuilder(repository)
     // TODO: Create multiple commits per push
-    commitBuilder.createCommit(
-      conf.commands.pushConfig.numFiles,
-      conf.commands.pushConfig.minContentLength,
-      conf.commands.pushConfig.maxContentLength,
-      conf.commands.pushConfig.commitPrefix
-    )
+    commitBuilder.commitToRepository(repository)
 
     // XXX Make branch configurable
     // XXX Make credential configurable
@@ -242,6 +239,16 @@ case class Push(url: URIish, user: String, refSpec: String = HeadToMasterRefSpec
       )
     }
   }
+}
+
+object Push {
+  val conf = GatlingGitConfiguration()
+  val defaultCommitBuilder = new CommitBuilder(
+    conf.commands.pushConfig.numFiles,
+    conf.commands.pushConfig.minContentLength,
+    conf.commands.pushConfig.maxContentLength,
+    conf.commands.pushConfig.commitPrefix
+  )
 }
 
 case class InvalidRequest(url: URIish, user: String)(implicit val conf: GatlingGitConfiguration)
