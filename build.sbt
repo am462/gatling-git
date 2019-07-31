@@ -53,7 +53,6 @@ credentials += Credentials(Path.userHome / ".sbt" / "sonatype_credentials")
 git.useGitDescribe := true
 
 useGpg := true
-usePgpKeyHex("C01506A0")
 
 assemblyMergeStrategy in assembly := {
  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
