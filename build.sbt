@@ -46,13 +46,14 @@ lazy val root = (project in file("."))
         Seq("com.google.inject" % "guice" % "3.0") ++
         Seq("commons-io" % "commons-io" % "2.6") ++
         Seq("org.scalatest" %% "scalatest" % "3.0.1" % Test ),
-
-    useGpg := true,
   )
 
 credentials += Credentials(Path.userHome / ".sbt" / "sonatype_credentials")
 
 git.useGitDescribe := true
+
+useGpg := true
+usePgpKeyHex("C01506A0")
 
 assemblyMergeStrategy in assembly := {
  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
