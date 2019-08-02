@@ -29,7 +29,7 @@ import org.eclipse.jgit.api.{Git => JGit}
 trait GitTestHelpers {
   var testGitRepo: JGit = _
 
-  val tempBase: String          = Files.createTempDirectory("gatlinGitTests").toFile.getAbsolutePath
+  val tempBase: String          = Files.createTempDirectory("gatlingGitTests").toFile.getAbsolutePath
   val testUser: String          = "testUser"
   val testRepo: String          = "testRepo"
   val testBranchName: String    = "mybranch"
