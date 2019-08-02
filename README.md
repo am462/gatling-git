@@ -70,7 +70,7 @@ and then setup the Git protocol associated to the simulation.
 For instance, for a constant traffic from 2 concurrent users for a 1 minute test:
 
 ```scala
-val gitProtocol = GitProtol()
+val gitProtocol = GitProtocol()
 
   setUp(
     gitPush.inject(constantConcurrentUsers(2) during (1 minute))
