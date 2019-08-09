@@ -29,7 +29,7 @@ class CommitBuilder(numFiles: Int, minContentLength: Int, maxContentLength: Int,
     Vector.range(0, numFiles).par.foreach { e =>
       val contentLength: Int = minContentLength + random
         .nextInt((maxContentLength - minContentLength) + 1)
-      val file: MockFile   = MockFileFactory.create("text", contentLength)
+      val file: MockFile   = MockFileFactory.create(TextFileType, contentLength)
       val fileName: String = file.save(repository.getWorkTree.toString)
     }
 

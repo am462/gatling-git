@@ -38,6 +38,9 @@ object MockFiles {
     )
   }
 
+  sealed trait FileType
+  case object TextFileType extends FileType
+
   class TextFile(contentLength: Int) extends AbstractMockFile(contentLength) {
 
     override def generateContent(size: Int): String = {
@@ -59,10 +62,9 @@ object MockFiles {
 object MockFileFactory {
   import MockFiles._
 
-  def create(fileType: String, contentLength: Int): MockFile = {
+  def create(fileType: FileType, contentLength: Int): MockFile = {
     fileType match {
-      case "text" => new TextFile(contentLength)
-      case _      => throw new Exception("Unknown file type: %s".format(fileType))
+      case TextFileType => new TextFile(contentLength)
     }
   }
 }
