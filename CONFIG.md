@@ -55,7 +55,7 @@ Minimum content length in bytes of each file contained in the push
 
 Default: `100`
 
-### commands.push.minContentLength [MAX_CONTENT_LENGTH]
+### commands.push.maxContentLength [MAX_CONTENT_LENGTH]
 Maximum content length in bytes of each file contained in the push
 
 Default: `10000`
