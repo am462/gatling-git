@@ -2,26 +2,31 @@
   {
     "url": "ssh://admin@localhost:29418/loadtest-repo",
     "cmd": "clone",
+    "ref-spec": "master",
     "pause": "7 ms"
   },
   {
     "url": "ssh://admin@localhost:29418/loadtest-repo",
     "cmd": "pull",
+    "ref-spec": "master",
     "pause": "7 ms"
   },
   {
     "url": "ssh://admin@localhost:29418/loadtest-repo",
     "cmd": "push",
+    "ref-spec": "master",
     "pause": "7 ms"
   },
   {
     "url": "http://localhost:8080/loadtest-repo",
     "cmd": "clone",
+    "ref-spec": "master",
     "pause": "7 ms"
   },
   {
     "url": "http://localhost:8080/loadtest-repo",
     "cmd": "pull",
+    "ref-spec": "master",
     "pause": "7 ms"
   },
   {
