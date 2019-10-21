@@ -40,6 +40,7 @@ case class GitRequestBuilder(request: GitRequestSession)(
       urlString <- request.url(session)
       url       <- validateUrl(urlString)
       refSpec   <- request.refSpec(session)
+      tag       <- request.tag(session)
     } yield {
       val user = session.userId.toString
       command.toLowerCase match {
@@ -47,6 +48,7 @@ case class GitRequestBuilder(request: GitRequestSession)(
         case "fetch" => Fetch(url, user)
         case "pull"  => Pull(url, user)
         case "push"  => Push(url, user, refSpec)
+        case "tag"   => Tag(url, user, refSpec, tag)
         case _       => InvalidRequest(url, user)
       }
     }

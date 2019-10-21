@@ -22,17 +22,20 @@ import GitRequestSession._
 case class GitRequestSession(
     commandName: Expression[String],
     url: Expression[String],
-    refSpec: Expression[String] = HeadToMasterRefSpec
+    refSpec: Expression[String] = HeadToMasterRefSpec,
+    tag: Expression[String] = EmptyTag
 )
 
 object GitRequestSession {
   val MasterRef           = s"$R_HEADS$MASTER"
   val HeadToMasterRefSpec = StaticStringExpression(s"$HEAD:$MasterRef")
+  val EmptyTag            = StaticStringExpression("")
 
   def cmd(
       cmd: String,
       url: Expression[String],
-      refSpec: Expression[String] = HeadToMasterRefSpec
+      refSpec: Expression[String] = HeadToMasterRefSpec,
+      tag: Expression[String] = EmptyTag
   ): GitRequestSession =
-    GitRequestSession(StaticStringExpression(cmd), url, refSpec)
+    GitRequestSession(StaticStringExpression(cmd), url, refSpec, tag)
 }

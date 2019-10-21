@@ -61,7 +61,8 @@ lazy val root = (project in file("."))
         Seq("org.eclipse.jgit" % "org.eclipse.jgit" % "5.3.0.201903130848-r") ++
         Seq("com.google.inject" % "guice" % "3.0") ++
         Seq("commons-io" % "commons-io" % "2.6") ++
-        Seq("org.scalatest" %% "scalatest" % "3.0.1" % Test ),
+        Seq("com.typesafe.scala-logging" %% "scala-logging" % "3.9.2") ++
+      Seq("org.scalatest" %% "scalatest" % "3.0.1" % Test ),
   )
 
 credentials += Credentials(Path.userHome / ".sbt" / "sonatype_credentials")

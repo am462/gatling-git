@@ -32,4 +32,7 @@ case object Git {
 
   def push(url: Expression[String]): GitRequestBuilder =
     new GitRequestBuilder(GitRequestSession.cmd("push", url))
+
+  def tag(url: Expression[String], tag: Expression[String]): GitRequestBuilder =
+    new GitRequestBuilder(GitRequestSession.cmd("push", url, tag))
 }

@@ -35,9 +35,13 @@ import org.eclipse.jgit.transport.SshSessionFactory
 import org.eclipse.jgit.util.FS
 import org.eclipse.jgit.transport.SshTransport
 import org.eclipse.jgit.hooks._
-import GitRequestSession.{HeadToMasterRefSpec, MasterRef}
+import GitRequestSession.{EmptyTag, HeadToMasterRefSpec, MasterRef}
+import com.typesafe.scalalogging.LazyLogging
+import org.eclipse.jgit.internal.storage.file.FileRepository
+import org.eclipse.jgit.revwalk.RevWalk
 
 import collection.JavaConverters._
+import scala.util.{Failure, Success, Try}
 
 sealed trait Request {
 
@@ -50,6 +54,7 @@ sealed trait Request {
   private val repoName         = url.getPath.split("/").last
   val workTreeDirectory: File  = new File(conf.tmpBasePath + s"/$user/$repoName-worktree")
   private val builder          = new FileRepositoryBuilder
+  workTreeDirectory.mkdirs()
   val repository: Repository   = builder.setWorkTree(workTreeDirectory).build()
 
   val sshSessionFactory: SshSessionFactory = new JschConfigSessionFactory() {
@@ -238,6 +243,54 @@ case class Push(url: URIish,
           )
         )
     )
+  }
+}
+
+case class Tag(url: URIish,
+               user: String,
+               refSpec: String = HeadToMasterRefSpec.value,
+               tag: String = EmptyTag.value)(
+                implicit val conf: GatlingGitConfiguration
+              ) extends Request with LazyLogging {
+  override def name: String = s"Push: $url"
+
+  val uniqueSuffix = s"$user - ${LocalDateTime.now}"
+
+  override def send: GitCommandResponse = {
+    import PimpedGitTransportCommand._
+    val git = Git.init().setDirectory(workTreeDirectory).call()
+    git.remoteAdd().setName("origin").setUri(url).call()
+
+    val fetchResult = git
+      .fetch()
+      .setRemote("origin")
+      .setRefSpecs(refSpec)
+      .setAuthenticationMethod(url, cb)
+      .call()
+
+    val fetchHead = fetchResult.getAdvertisedRef(refSpec)
+
+    val revWalk = new RevWalk(git.getRepository)
+    val headCommit = try {
+      revWalk.parseAny(fetchHead.getObjectId)
+    } finally {
+      revWalk.close()
+    }
+
+    val tagResult = git.tag().setName(tag).setObjectId(headCommit).call()
+    val pushResult = git
+      .push()
+      .setRemote("origin")
+      .setRefSpecs(new RefSpec(s"refs/tags/${tag}"))
+      .setAuthenticationMethod(url, cb)
+      .call()
+      .asScala
+
+    if (!pushResult.isEmpty) {
+      GitCommandResponse(OK)
+    } else {
+      GitCommandResponse(Fail)
+    }
   }
 }
 
