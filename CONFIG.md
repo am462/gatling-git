@@ -65,3 +65,13 @@ Prefix added to the synthetic commit messages
 
 Default: `empty string`
 
+### git.commandTimeout [COMMAND_TIMEOUT]
+The timeout (in seconds) used to limit git commands duration
+
+Default: `30`
+
+### git.showProgress [SHOW_PROGRESS]
+Whether to report progress on standard output during git operations.
+
+Default `true`
+
