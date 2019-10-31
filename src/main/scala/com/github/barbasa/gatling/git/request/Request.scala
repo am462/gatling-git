@@ -168,6 +168,7 @@ case class Fetch(url: URIish, user: String)(implicit val conf: GatlingGitConfigu
     val fetchResult = new Git(repository)
       .fetch()
       .setRemote("origin")
+      .setRefSpecs("+refs/*:refs/*")
       .setAuthenticationMethod(url, cb)
       .setTimeout(conf.gitConfiguration.commandTimeout)
       .setProgressMonitor(progressMonitor)
