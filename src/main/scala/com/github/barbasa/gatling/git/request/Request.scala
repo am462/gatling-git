@@ -35,7 +35,7 @@ import org.eclipse.jgit.transport.SshSessionFactory
 import org.eclipse.jgit.util.FS
 import org.eclipse.jgit.transport.SshTransport
 import org.eclipse.jgit.hooks._
-import GitRequestSession.{EmptyTag, HeadToMasterRefSpec, MasterRef}
+import GitRequestSession.{EmptyTag, HeadToMasterRefSpec, MasterRef, AllRefs}
 import com.typesafe.scalalogging.LazyLogging
 import org.eclipse.jgit.internal.storage.file.FileRepository
 import org.eclipse.jgit.revwalk.RevWalk
@@ -157,7 +157,7 @@ case class Clone(url: URIish, user: String, ref: String = MasterRef)(
   }
 }
 
-case class Fetch(url: URIish, user: String)(implicit val conf: GatlingGitConfiguration)
+case class Fetch(url: URIish, user: String, refSpec: String = AllRefs)(implicit val conf: GatlingGitConfiguration)
     extends Request {
   initRepo()
 
@@ -168,7 +168,7 @@ case class Fetch(url: URIish, user: String)(implicit val conf: GatlingGitConfigu
     val fetchResult = new Git(repository)
       .fetch()
       .setRemote("origin")
-      .setRefSpecs("+refs/*:refs/*")
+      .setRefSpecs(refSpec)
       .setAuthenticationMethod(url, cb)
       .setTimeout(conf.gitConfiguration.commandTimeout)
       .setProgressMonitor(progressMonitor)

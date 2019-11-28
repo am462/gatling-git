@@ -18,6 +18,7 @@ import org.apache.commons.io.FileUtils
 import org.eclipse.jgit.api.{Git => JGit}
 import org.eclipse.jgit.transport.URIish
 import org.scalatest.{BeforeAndAfter, FlatSpec, Matchers}
+import com.github.barbasa.gatling.git.GitRequestSession.MasterRef
 
 class FetchSpec extends FlatSpec with BeforeAndAfter with Matchers with GitTestHelpers {
 
