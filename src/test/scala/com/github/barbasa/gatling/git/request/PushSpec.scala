@@ -35,12 +35,7 @@ class PushSpec extends FlatSpec with BeforeAndAfter with Matchers with GitTestHe
 
   behavior of "Push"
 
-  "without any error" should "return OK" in {
-    val response = Push(new URIish(s"file://$originRepoDirectory"), s"$testUser").send
-    response.status shouldBe OK
-  }
-
-  "with an error" should "return Fail" in {
+  "with an non-ff rejection error" should "return Fail" in {
     // Force non-ff failure:
     // 1. Clone a repo for user-1
     Clone(new URIish(s"file://${originRepoDirectory}"), s"$testUser-1").send
@@ -50,6 +45,22 @@ class PushSpec extends FlatSpec with BeforeAndAfter with Matchers with GitTestHe
     val response = Push(new URIish(s"file://$originRepoDirectory"), s"$testUser-1").send
     response.status shouldBe Fail
     response.message shouldBe Some("Status: REJECTED_NONFASTFORWARD - Message: null")
+  }
+
+  "with a forced-push" should "return OK" in {
+    // Force non-ff failure:
+    // 1. Clone a repo for user-1
+    Clone(new URIish(s"file://${originRepoDirectory}"), s"$testUser-1").send
+    // 2. Push a change from user-2
+    Push(new URIish(s"file://$originRepoDirectory"), s"$testUser-2").send
+    // 3. Push a change from user-1 without fetching remote
+    val response = Push(new URIish(s"file://$originRepoDirectory"), s"$testUser-1", force = true).send
+    response.status shouldBe OK
+  }
+
+  "without any error" should "return OK" in {
+    val response = Push(new URIish(s"file://$originRepoDirectory"), s"$testUser").send
+    response.status shouldBe OK
   }
 
   it should "push to a new branch" in {
