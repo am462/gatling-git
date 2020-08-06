@@ -222,9 +222,8 @@ case class Push(url: URIish,
     val git = new Git(repository)
 
     // TODO: Create multiple commits per push
-    commitBuilder.commitToRepository(repository)
+    commitBuilder.commitToRepository(repository, Option(refSpec).filter(!_.contains(":")))
 
-    // XXX Make branch configurable
     // XXX Make credential configurable
     val pushResults = git.push
       .setAuthenticationMethod(url, cb)

@@ -19,12 +19,14 @@ import org.eclipse.jgit.api._
 import org.eclipse.jgit.lib.Repository
 import java.time.LocalDateTime
 import scala.util.Random
+import scala.collection.JavaConverters._
+import org.eclipse.jgit.lib.Constants.R_HEADS
 
 class CommitBuilder(numFiles: Int, minContentLength: Int, maxContentLength: Int, prefix: String) {
 
   val random = new Random()
 
-  def commitToRepository(repository: Repository) {
+  def commitToRepository(repository: Repository, branch: Option[String] = Option.empty) {
     val git = new Git(repository)
     Vector.range(0, numFiles).par.foreach { e =>
       val contentLength: Int = minContentLength + random
@@ -32,6 +34,13 @@ class CommitBuilder(numFiles: Int, minContentLength: Int, maxContentLength: Int,
       val file: MockFile   = MockFileFactory.create(TextFileType, contentLength)
       val fileName: String = file.save(repository.getWorkTree.toString)
     }
+
+    val existingBranches = git.branchList.call.asScala
+      .map(_.getName.drop(R_HEADS.length))
+      .toSet
+
+    val existingBranch = branch.filter(existingBranches.contains)
+    existingBranch.foreach(git.checkout.setName(_).call)
 
     git.add.addFilepattern(".").call()
 
@@ -42,5 +51,9 @@ class CommitBuilder(numFiles: Int, minContentLength: Int, maxContentLength: Int,
         s"${prefix}Test commit header - $uniqueSuffix\n\nTest commit body - $uniqueSuffix\n"
       )
       .call()
+
+    branch
+      .filterNot(existingBranch.contains)
+      .foreach(git.branchCreate.setName(_).call)
   }
 }

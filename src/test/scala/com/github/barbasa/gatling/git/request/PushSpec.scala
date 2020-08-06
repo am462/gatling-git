@@ -16,6 +16,7 @@ package com.github.barbasa.gatling.git.request
 
 import org.apache.commons.io.FileUtils
 import org.eclipse.jgit.api.{Git => JGit}
+import org.eclipse.jgit.lib.Constants.R_HEADS
 import org.eclipse.jgit.transport.URIish
 import org.scalatest.{BeforeAndAfter, FlatSpec, Matchers}
 
@@ -64,15 +65,28 @@ class PushSpec extends FlatSpec with BeforeAndAfter with Matchers with GitTestHe
   }
 
   it should "push to a new branch" in {
-    val pushRef = s"refs/heads/$testBranchName"
+    val pushRef = testBranchName
     val response = Push(
       new URIish(s"file://$originRepoDirectory"),
       s"$testUser",
-      s"HEAD:$pushRef"
+      s"$pushRef"
     ).send
     response.status shouldBe OK
 
-    val refsList = testGitRepo.branchList().call().asScala
-    refsList.map(_.getName) should contain(pushRef)
+    testGitRepo.branchList.call.asScala.map(_.getName) should contain(s"$R_HEADS$pushRef")
+  }
+
+  it should "push to an existing branch" in {
+    val pushRef = testBranchName
+    val push = Push(
+      new URIish(s"file://$originRepoDirectory"),
+      s"$testUser",
+      s"$pushRef"
+    )
+
+    push.send.status shouldBe OK
+    push.send.status shouldBe OK
+
+    testGitRepo.branchList.call.asScala.map(_.getName) should contain(s"$R_HEADS$pushRef")
   }
 }
