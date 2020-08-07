@@ -31,7 +31,7 @@ class GitRequestAction(
     coreComponents: CoreComponents,
     reqBuilder: GitRequestBuilder,
     val throttled: Boolean,
-    val next: Action,
+    val next: Action
 ) extends ExitableAction
     with NameGen {
 

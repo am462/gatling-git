@@ -20,8 +20,8 @@ import io.gatling.core.session.Expression
 object SessionOps {
   implicit class SessionPimper(session: Session) {
     def ensureOrElse[T](sessionAttribute: String, default: Expression[T]): Session =
-      if(!session.contains(sessionAttribute))
+      if (!session.contains(sessionAttribute))
         session.set(sessionAttribute, default)
       else session
-    }
+  }
 }

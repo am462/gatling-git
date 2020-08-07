@@ -55,7 +55,7 @@ sealed trait Request {
   val workTreeDirectory: File  = new File(conf.tmpBasePath + s"/$user/$repoName-worktree")
   private val builder          = new FileRepositoryBuilder
   workTreeDirectory.mkdirs()
-  val repository: Repository   = builder.setWorkTree(workTreeDirectory).build()
+  val repository: Repository = builder.setWorkTree(workTreeDirectory).build()
 
   val sshSessionFactory: SshSessionFactory = new JschConfigSessionFactory() {
     protected def configure(host: OpenSshConfig.Host, session: SSHSession): Unit = {}
@@ -67,7 +67,9 @@ sealed trait Request {
     }
   }
 
-  def progressMonitor = if(conf.gitConfiguration.showProgress) new TextProgressMonitor(new PrintWriter(System.out)) else  NullProgressMonitor.INSTANCE
+  def progressMonitor =
+    if (conf.gitConfiguration.showProgress) new TextProgressMonitor(new PrintWriter(System.out))
+    else NullProgressMonitor.INSTANCE
 
   def initRepo() = {
     Git.init
@@ -157,8 +159,9 @@ case class Clone(url: URIish, user: String, ref: String = MasterRef)(
   }
 }
 
-case class Fetch(url: URIish, user: String, refSpec: String = AllRefs)(implicit val conf: GatlingGitConfiguration)
-    extends Request {
+case class Fetch(url: URIish, user: String, refSpec: String = AllRefs)(
+    implicit val conf: GatlingGitConfiguration
+) extends Request {
   initRepo()
 
   val name = s"Fetch: $url"
@@ -191,7 +194,8 @@ case class Pull(url: URIish, user: String)(implicit val conf: GatlingGitConfigur
   override def send: GitCommandResponse = {
     import PimpedGitTransportCommand._
     val pullResult = new Git(repository)
-      .pull().setAuthenticationMethod(url, cb)
+      .pull()
+      .setAuthenticationMethod(url, cb)
       .setTimeout(conf.gitConfiguration.commandTimeout)
       .setProgressMonitor(progressMonitor)
       .call()
@@ -204,12 +208,13 @@ case class Pull(url: URIish, user: String)(implicit val conf: GatlingGitConfigur
   }
 }
 
-case class Push(url: URIish,
-                user: String,
-                refSpec: String = HeadToMasterRefSpec.value,
-                commitBuilder: CommitBuilder = Push.defaultCommitBuilder,
-                force: Boolean = false
-               )(
+case class Push(
+    url: URIish,
+    user: String,
+    refSpec: String = HeadToMasterRefSpec.value,
+    commitBuilder: CommitBuilder = Push.defaultCommitBuilder,
+    force: Boolean = false
+)(
     implicit val conf: GatlingGitConfiguration
 ) extends Request {
   initRepo()
@@ -261,12 +266,15 @@ case class Push(url: URIish,
   }
 }
 
-case class Tag(url: URIish,
-               user: String,
-               refSpec: String = HeadToMasterRefSpec.value,
-               tag: String = EmptyTag.value)(
-                implicit val conf: GatlingGitConfiguration
-              ) extends Request with LazyLogging {
+case class Tag(
+    url: URIish,
+    user: String,
+    refSpec: String = HeadToMasterRefSpec.value,
+    tag: String = EmptyTag.value
+)(
+    implicit val conf: GatlingGitConfiguration
+) extends Request
+    with LazyLogging {
   override def name: String = s"Push: $url"
 
   val uniqueSuffix = s"$user - ${LocalDateTime.now}"

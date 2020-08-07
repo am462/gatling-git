@@ -27,8 +27,8 @@ case class GatlingGitConfiguration private (
 )
 case class GitConfiguration(commandTimeout: Int, showProgress: Boolean)
 
-object GitConfiguration{
-  val DEFAULT_TIMEOUT = 30
+object GitConfiguration {
+  val DEFAULT_TIMEOUT       = 30
   val DEFAULT_SHOW_PROGRESS = true
 }
 
@@ -78,7 +78,8 @@ object GatlingGitConfiguration {
 
   def apply(): GatlingGitConfiguration = {
     val gitCommandTimeout =
-      if(config.hasPath("git.commandTimeout")) config.getInt("git.commandTimeout") else GitConfiguration.DEFAULT_TIMEOUT
+      if (config.hasPath("git.commandTimeout")) config.getInt("git.commandTimeout")
+      else GitConfiguration.DEFAULT_TIMEOUT
 
     val gitShowProgress = config
       .optionalBoolean("git.showProgress")
