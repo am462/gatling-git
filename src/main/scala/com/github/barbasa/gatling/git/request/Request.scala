@@ -224,10 +224,11 @@ case class Push(
 
   override def send: GitCommandResponse = {
     import PimpedGitTransportCommand._
-    val git = new Git(repository)
+    val git                                = new Git(repository)
+    val isSrcDstRefSpec: String => Boolean = _.contains(":") // e.g. HEAD:refs/for/master
 
     // TODO: Create multiple commits per push
-    commitBuilder.commitToRepository(repository, Option(refSpec).filter(!_.contains(":")))
+    commitBuilder.commitToRepository(repository, Option(refSpec).filterNot(isSrcDstRefSpec))
 
     // XXX Make credential configurable
     val pushResults = git.push
