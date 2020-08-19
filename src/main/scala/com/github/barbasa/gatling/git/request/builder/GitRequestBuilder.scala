@@ -30,6 +30,10 @@ object GitRequestBuilder {
 
 case class GitRequestBuilder(request: GitRequestSession)(
     implicit conf: GatlingGitConfiguration,
+    @deprecated(
+      "Use computeChangeId for generating a Change-Id instead of relying on hooks copied on clone",
+      since = "1.0.12"
+    )
     val postMsgHook: Option[String] = None
 ) {
 
