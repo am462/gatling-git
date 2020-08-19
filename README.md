@@ -117,7 +117,8 @@ Here below an example:
   {
     "url": "http://localhost:8080/loadtest-repo.git",
     "cmd": "push",
-    "ref-spec": "HEAD:refs/for/master"
+    "ref-spec": "HEAD:refs/for/master",
+    "compute-change-id": true
   }
 ]
 ```
@@ -134,6 +135,12 @@ The common parameters are:
 * `url`: The HTTP or SSH Git URL of the remote repository.
 * `ref-spec`: ref-spec of the `push` operation. Can be specified with a simple branch name or have
   the more general form of `local:remote` refs.
+
+The push operation have optional extra parameters:
+
+* `force`: set to `true` performs a forced push
+* `compute-change-id`: set to `true` for generating the standard `Change-Id` when pushing commits
+  for review.
 
 ### How to run the tests
 
