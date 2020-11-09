@@ -30,6 +30,8 @@ val luca = Developer(
   url = url("https://github.com/lucamilanesio")
 )
 
+val JGitVersion = "5.9.0.202009080501-r"
+
 lazy val root = (project in file("."))
   .enablePlugins(GitVersioning)
   .settings(
@@ -58,7 +60,8 @@ lazy val root = (project in file("."))
       gatling ++
         Seq("io.gatling" % "gatling-core" % GatlingVersion) ++
         Seq("io.gatling" % "gatling-app" % GatlingVersion) ++
-        Seq("org.eclipse.jgit" % "org.eclipse.jgit" % "5.3.0.201903130848-r") ++
+        Seq("org.eclipse.jgit" % "org.eclipse.jgit" % JGitVersion) ++
+        Seq("org.eclipse.jgit" % "org.eclipse.jgit.ssh.jsch" % JGitVersion) ++
         Seq("com.google.inject" % "guice" % "3.0") ++
         Seq("commons-io" % "commons-io" % "2.6") ++
         Seq("com.typesafe.scala-logging" %% "scala-logging" % "3.9.2") ++
