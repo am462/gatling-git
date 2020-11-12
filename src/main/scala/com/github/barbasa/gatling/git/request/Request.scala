@@ -14,34 +14,30 @@
 
 package com.github.barbasa.gatling.git.request
 import java.io.{File, PrintWriter}
-import java.nio.file.{Files, Paths}
+import java.nio.file.{Files, Path, Paths}
 import java.time.LocalDateTime
+import java.util.List
+
+import scala.util.{Failure, Success, Try}
 
 import com.github.barbasa.gatling.git.{GatlingGitConfiguration, GitRequestSession}
 import com.github.barbasa.gatling.git.helper.CommitBuilder
-import com.jcraft.jsch.JSch
-import com.jcraft.jsch.{Session => SSHSession}
-import io.gatling.commons.stats.{OK => GatlingOK}
-import io.gatling.commons.stats.{KO => GatlingFail}
-import io.gatling.commons.stats.Status
+import com.typesafe.scalalogging.LazyLogging
+import io.gatling.commons.stats.{KO => GatlingFail, OK => GatlingOK, Status}
 import org.apache.commons.io.FileUtils
 import org.eclipse.jgit.api._
-import org.eclipse.jgit.lib.{NullProgressMonitor, Repository, TextProgressMonitor}
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder
-import org.eclipse.jgit.transport._
-import org.eclipse.jgit.transport.JschConfigSessionFactory
-import org.eclipse.jgit.transport.OpenSshConfig
-import org.eclipse.jgit.transport.SshSessionFactory
-import org.eclipse.jgit.util.FS
-import org.eclipse.jgit.transport.SshTransport
 import org.eclipse.jgit.hooks._
-import GitRequestSession.{EmptyTag, HeadToMasterRefSpec, MasterRef, AllRefs}
-import com.typesafe.scalalogging.LazyLogging
 import org.eclipse.jgit.internal.storage.file.FileRepository
+import org.eclipse.jgit.lib.{NullProgressMonitor, Repository, TextProgressMonitor}
 import org.eclipse.jgit.revwalk.RevWalk
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+import org.eclipse.jgit.transport.{SshSessionFactory, SshTransport}
+import org.eclipse.jgit.transport._
+import org.eclipse.jgit.transport.sshd.SshdSessionFactory
+import org.eclipse.jgit.util.FS
 
+import GitRequestSession.{EmptyTag, HeadToMasterRefSpec, MasterRef, AllRefs}
 import collection.JavaConverters._
-import scala.util.{Failure, Success, Try}
 
 sealed trait Request {
 
@@ -57,13 +53,11 @@ sealed trait Request {
   workTreeDirectory.mkdirs()
   val repository: Repository = builder.setWorkTree(workTreeDirectory).build()
 
-  val sshSessionFactory: SshSessionFactory = new JschConfigSessionFactory() {
-    protected override def configure(host: OpenSshConfig.Host, session: SSHSession): Unit = {}
-
-    override protected def createDefaultJSch(fs: FS): JSch = {
-      val defaultJSch = super.createDefaultJSch(fs)
-      defaultJSch.addIdentity(conf.sshConfiguration.private_key_path)
-      defaultJSch
+  val sshSessionFactory: SshSessionFactory = new SshdSessionFactory {
+    override protected def getDefaultIdentities(sshDir: File): List[Path] = {
+      val defaultIdentities = super.getDefaultIdentities(sshDir)
+      defaultIdentities.add(Paths.get(conf.sshConfiguration.private_key_path))
+      defaultIdentities
     }
   }
 
