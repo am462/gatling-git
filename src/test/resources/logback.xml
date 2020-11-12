@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <immediateFlush>false</immediateFlush>
+    </encoder>
+  </appender>
+  <logger name="io.gatling.http.engine.response" level="${logHttp}"/>
+  <logger name="org.eclipse.jgit.internal.storage.file.FileSnapshot" level="INFO"/>
+  <logger name="org.eclipse.jgit.transport.PacketLineIn" level="INFO"/>
+  <logger name="org.eclipse.jgit.transport.PacketLineOut" level="INFO"/>
+  <logger name="org.eclipse.jgit.util.FS" level="INFO"/>
+  <root level="${logLevel}">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+</configuration>
