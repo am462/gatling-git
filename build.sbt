@@ -30,7 +30,7 @@ val luca = Developer(
   url = url("https://github.com/lucamilanesio")
 )
 
-val JGitVersion = "5.11.0-SNAPSHOT"
+val JGitVersion = "5.12.0.202106070339-r"
 resolvers += "jgit snapshot repo" at "https://repo.eclipse.org/content/groups/jgit/"
 
 lazy val root = (project in file("."))
