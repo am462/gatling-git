@@ -26,6 +26,7 @@ import io.gatling.core.util.NameGen
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import io.gatling.commons.stats.{KO => GatlingFail, OK => GatlingOK, Status}
 
 class GitRequestAction(
     coreComponents: CoreComponents,
@@ -57,21 +58,28 @@ class GitRequestAction(
         case Failure(message) => (GitCommandResponse(Fail), "Unknown", Some(message))
       }
 
+      val gatlingStatus = Request.gatlingStatusFromGit(response)
       statsEngine.logResponse(
         session,
         reqName,
         start,
         clock.nowMillis,
-        Request.gatlingStatusFromGit(response),
+        gatlingStatus,
         None,
         message
       )
       if (throttled) {
-        coreComponents.throttler.throttle(session.scenario, () => next ! session.markAsSucceeded)
+        coreComponents.throttler.throttle(session.scenario, () => next ! setSessionStatus(session, gatlingStatus))
       } else {
-        next ! session.markAsSucceeded
+        next ! setSessionStatus(session, gatlingStatus)
       }
     }
+  }
 
+  private def setSessionStatus(session: Session, status: Status): Session = {
+    status match {
+      case GatlingOK   => session.markAsSucceeded
+      case GatlingFail => session.markAsFailed
+    }
   }
 }
