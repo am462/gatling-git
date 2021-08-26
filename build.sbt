@@ -70,6 +70,7 @@ lazy val root = (project in file("."))
   )
 
 credentials += Credentials(Path.userHome / ".sbt" / "sonatype_credentials")
+scalafmtOnCompile := true
 
 git.useGitDescribe := true
 
