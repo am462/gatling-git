@@ -22,20 +22,20 @@ class SessionOpsSpec extends FlatSpec with Matchers {
   behavior of "ensureOrElse"
 
   it should "set session attribute when not present" in {
-    val aUserID = 1L
+    val aUserID        = 1L
     val attributeValue = "foo"
-    val attributeKey = "bar"
+    val attributeKey   = "bar"
 
     Session("TestScenario", aUserID, System.currentTimeMillis())
-        .ensureOrElse(attributeValue, StaticStringExpression(attributeKey))
-        .attributes(attributeValue)
-        .asInstanceOf[StaticStringExpression]
-        .value shouldBe attributeKey
+      .ensureOrElse(attributeValue, StaticStringExpression(attributeKey))
+      .attributes(attributeValue)
+      .asInstanceOf[StaticStringExpression]
+      .value shouldBe attributeKey
   }
 
   it should "maintain the attribute when already set" in {
-    val aUserID = 1L
-    val attributeValue = "foo"
+    val aUserID                = 1L
+    val attributeValue         = "foo"
     val originalAttributeValue = "bar"
 
     Session("TestScenario", aUserID, System.currentTimeMillis())

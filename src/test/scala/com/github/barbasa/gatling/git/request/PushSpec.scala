@@ -55,7 +55,8 @@ class PushSpec extends FlatSpec with BeforeAndAfter with Matchers with GitTestHe
     // 2. Push a change from user-2
     Push(new URIish(s"file://$originRepoDirectory"), s"$testUser-2").send
     // 3. Push a change from user-1 without fetching remote
-    val response = Push(new URIish(s"file://$originRepoDirectory"), s"$testUser-1", force = true).send
+    val response =
+      Push(new URIish(s"file://$originRepoDirectory"), s"$testUser-1", force = true).send
     response.status shouldBe OK
   }
 
@@ -91,14 +92,15 @@ class PushSpec extends FlatSpec with BeforeAndAfter with Matchers with GitTestHe
   }
 
   "with a branch and computing a Change-Id" should "create a commit ready for review" in {
-    val basePush = Push(new URIish(s"file://$originRepoDirectory"), s"$testUser", refSpec = testBranchName)
+    val basePush =
+      Push(new URIish(s"file://$originRepoDirectory"), s"$testUser", refSpec = testBranchName)
     basePush.send.status shouldBe OK
     basePush.copy(computeChangeId = true).send.status shouldBe OK
 
     val branchHead = testGitRepo.getRepository.exactRef(s"$R_HEADS$testBranchName")
-    val newCommit = testGitRepo.getRepository.parseCommit(branchHead.getObjectId)
+    val newCommit  = testGitRepo.getRepository.parseCommit(branchHead.getObjectId)
 
     newCommit.getFullMessage should include("Change-Id: I")
-    newCommit.getParents should not be(empty)
+    newCommit.getParents should not be (empty)
   }
 }

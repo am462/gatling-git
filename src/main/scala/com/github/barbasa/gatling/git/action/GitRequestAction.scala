@@ -69,7 +69,8 @@ class GitRequestAction(
         message
       )
       if (throttled) {
-        coreComponents.throttler.throttle(session.scenario, () => next ! setSessionStatus(session, gatlingStatus))
+        coreComponents.throttler
+          .throttle(session.scenario, () => next ! setSessionStatus(session, gatlingStatus))
       } else {
         next ! setSessionStatus(session, gatlingStatus)
       }

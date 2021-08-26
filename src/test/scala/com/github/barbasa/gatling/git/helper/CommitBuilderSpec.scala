@@ -68,10 +68,12 @@ class CommitBuilderSpec extends FlatSpec with BeforeAndAfter with Matchers with 
 
   "with prefix parameter" should "start with the prefix" in {
 
-    val commitBuilder = new CommitBuilder(fixtures.numberOfFilesPerCommit,
-                                          fixtures.minContentLengthOfCommit,
-                                          fixtures.maxContentLengthOfCommit,
-                                          "testPrefix - ")
+    val commitBuilder = new CommitBuilder(
+      fixtures.numberOfFilesPerCommit,
+      fixtures.minContentLengthOfCommit,
+      fixtures.maxContentLengthOfCommit,
+      "testPrefix - "
+    )
     commitBuilder.commitToRepository(testGitRepo.getRepository)
     getHeadCommit.getFullMessage should startWith("testPrefix - Test commit header - ")
   }
