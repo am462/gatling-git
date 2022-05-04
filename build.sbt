@@ -94,6 +94,16 @@ lazy val jgit = (project in file("jgit")).settings(
   name := "gatling-git-jgit",
   organization := "com.gerritforge",
   organizationName := "GerritForge",
+  homepage := Some(url("https://gerritforge.com")),
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/GerritForge/jgit"),
+      "scm:https://review.gerrithub.io/GerritForge/jgit.git"
+    )
+  ),
+  developers := List(ponch, tony, thomas, luca),
+  description := "JGit fork used by the Gatling plugin for supporting the Git protocol over SSH and HTTP",
+  licenses := List("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")),
   libraryDependencies ++= jgitDependencies,
   Compile / javaSource := baseDirectory.value / "org.eclipse.jgit/src",
   Compile / resourceDirectory := baseDirectory.value / "org.eclipse.jgit/resources",
