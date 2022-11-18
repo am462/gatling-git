@@ -1,7 +1,7 @@
 import sbt._
 
 object Dependencies {
-  val GatlingVersion = "3.2.0"
+  val GatlingVersion = "3.3.1"
 
   lazy val gatling = Seq(
     "io.gatling.highcharts" % "gatling-charts-highcharts",
