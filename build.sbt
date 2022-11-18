@@ -30,13 +30,13 @@ val luca = Developer(
   url = url("https://github.com/lucamilanesio")
 )
 
-publishTo in ThisBuild := {
+ThisBuild / publishTo := {
   val nexus = "https://oss.sonatype.org/"
   if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
   else Some("releases" at nexus + "service/local/staging/deploy/maven2")
 }
 
-publishMavenStyle in ThisBuild := true
+ThisBuild / publishMavenStyle := true
 
 lazy val root = (project in file("."))
   .aggregate(extension, jgit)
@@ -74,7 +74,7 @@ lazy val extension = (project in file("gatling-extension"))
         Seq("commons-io"                 % "commons-io"     % "2.11.0") ++
         Seq("com.typesafe.scala-logging" %% "scala-logging" % "3.9.2" % "provided") ++
         Seq("org.scalatest"              %% "scalatest"     % "3.0.1" % Test),
-    assemblyMergeStrategy in assembly := {
+    assembly / assemblyMergeStrategy := {
       case PathList("META-INF", xs @ _*) => MergeStrategy.discard
       case x                             => MergeStrategy.first
     },
