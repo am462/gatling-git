@@ -113,6 +113,7 @@ lazy val jgit = (project in file("jgit")).settings(
   licenses := List("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")),
   libraryDependencies ++= jgitDependencies,
   Compile / javaSource := baseDirectory.value / "org.eclipse.jgit/src",
+  Compile / packageDoc / publishArtifact := false,
   Compile / resourceDirectory := baseDirectory.value / "org.eclipse.jgit/resources",
   Compile / unmanagedSourceDirectories += baseDirectory.value / "org.eclipse.jgit.ssh.apache/src",
   Compile / unmanagedResourceDirectories += baseDirectory.value / "org.eclipse.jgit.ssh.apache/resources",
