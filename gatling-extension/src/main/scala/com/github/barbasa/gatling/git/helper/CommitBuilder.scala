@@ -21,7 +21,6 @@ import java.time.LocalDateTime
 
 import scala.util.Random
 import scala.jdk.CollectionConverters._
-import scala.collection.parallel.CollectionConverters._
 import org.eclipse.jgit.lib.Constants.R_HEADS
 import org.eclipse.jgit.util.ChangeIdUtil
 
@@ -35,7 +34,7 @@ class CommitBuilder(numFiles: Int, minContentLength: Int, maxContentLength: Int,
       computeChangeId: Boolean = false
   ) = {
     val git = new Git(repository)
-    Vector.range(0, numFiles).par.foreach { e =>
+    Vector.range(0, numFiles).foreach { e =>
       val contentLength: Int = minContentLength + random
         .nextInt((maxContentLength - minContentLength) + 1)
       val file: MockFile   = MockFileFactory.create(TextFileType, contentLength)

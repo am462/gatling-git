@@ -82,7 +82,6 @@ lazy val extension = (project in file("gatling-extension"))
         "io.gatling"                 % "gatling-app"                 % GatlingVersion % "provided",
         "com.google.inject"          % "guice"                       % "3.0",
         "commons-io"                 % "commons-io"                  % "2.11.0",
-        "org.scala-lang.modules"     %% "scala-parallel-collections" % "1.0.4",
         "com.typesafe.scala-logging" %% "scala-logging"              % "3.9.5" % "provided",
         "org.eclipse.jgit"           % "org.eclipse.jgit"            % JGitVersion,
         "org.eclipse.jgit"           % "org.eclipse.jgit.ssh.apache" % JGitVersion,
