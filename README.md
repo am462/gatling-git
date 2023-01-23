@@ -16,9 +16,9 @@ level test scenarios using directly the Git verbs in your tests.
 ### Prerequisites
 
 * [Scala 2.13][scala]
-* [Gatling 3.8.4][gatling-3.8.4]
+* [Gatling 3.9.0][gatling-3.9.0]
 
-[gatling-3.8.4]: https://mvnrepository.com/artifact/io.gatling/gatling-core/3.8.4
+[gatling-3.9.0]: https://mvnrepository.com/artifact/io.gatling/gatling-core/3.9.0
 [scala]: https://www.scala-lang.org/download/
 
 ### Using the Gatling Git test scenarios and protocol
@@ -34,7 +34,7 @@ import com.github.barbasa.gatling.git.request.builder._
 Add the following dependencies to your Gatling SBT project:
 
 ```scala
-val GatlingVersion = "3.8.4"
+val GatlingVersion = "3.9.0"
 
 libraryDependencies += "io.gatling.highcharts" % "gatling-charts-highcharts" % GatlingVersion % Test
 libraryDependencies += "io.gatling.highcharts" % "gatling-test-framework" % GatlingVersion % Test
