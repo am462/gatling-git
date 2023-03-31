@@ -108,7 +108,12 @@ class PushSpec extends FlatSpec with BeforeAndAfter with Matchers with GitTestHe
 
   it should "not fail if push options are added over local protocol" in {
     val basePush =
-      Push(new URIish(s"file://$originRepoDirectory"), s"$testUser", refSpec = testBranchName, options = List("testKey=testValue"))
+      Push(
+        new URIish(s"file://$originRepoDirectory"),
+        s"$testUser",
+        refSpec = testBranchName,
+        options = List("testKey=testValue")
+      )
     basePush.send.status shouldBe OK
   }
 }

@@ -227,8 +227,8 @@ case class Push(
     force: Boolean = false,
     computeChangeId: Boolean = false,
     options: List[String] = List.empty
-)(
-    implicit val conf: GatlingGitConfiguration
+)(implicit
+    val conf: GatlingGitConfiguration
 ) extends Request {
 
   override def name: String = s"Push: $url"

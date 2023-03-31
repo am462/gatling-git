@@ -52,13 +52,21 @@ case class GitRequestBuilder(request: GitRequestSession)(implicit
       pushOptions     <- request.pushOptions(session)
       user            <- request.userId(session)
     } yield {
-      val userId = if(user == "") session.userId.toString else user
+      val userId = if (user == "") session.userId.toString else user
       command.toLowerCase match {
         case "clone" => Clone(url, userId, refSpec)
         case "fetch" => Fetch(url, userId, refSpec)
         case "pull"  => Pull(url, userId)
-        case "push"  => Push(url, userId, refSpec, force = force, computeChangeId = computeChangeId, options = pushOptions.split(",").toList)
-        case "tag"   => Tag(url, userId, refSpec, tag)
+        case "push" =>
+          Push(
+            url,
+            userId,
+            refSpec,
+            force = force,
+            computeChangeId = computeChangeId,
+            options = pushOptions.split(",").toList
+          )
+        case "tag"          => Tag(url, userId, refSpec, tag)
         case "cleanup-repo" => CleanupRepo(url, userId)
         case _              => InvalidRequest(url, userId)
       }
