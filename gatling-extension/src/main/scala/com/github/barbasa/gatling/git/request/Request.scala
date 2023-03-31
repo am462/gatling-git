@@ -69,7 +69,7 @@ sealed trait Request {
   def cleanRepo() = {
     val deleteCommandResult = new Directory(workTreeDirectory).deleteRecursively()
     if (deleteCommandResult) {
-      addRemote(initRepo(workTreeDirectory), url)
+      addRemote(initRepo(workTreeDirectory), url): Unit
     }
     deleteCommandResult
   }
@@ -93,7 +93,7 @@ sealed trait Request {
             )
           )
         case "file" =>
-          c.setTransportConfigCallback((transport: Transport) => {
+          c.setTransportConfigCallback((_: Transport) => {
             println("Noop: writing on file")
           })
       }
@@ -173,7 +173,7 @@ case class CleanupRepo(url: URIish, user: String)(
 case class Fetch(url: URIish, user: String, refSpec: String = AllRefs)(
     implicit val conf: GatlingGitConfiguration
 ) extends Request {
-  addRemote(initRepo(workTreeDirectory), url)
+  addRemote(initRepo(workTreeDirectory), url): Unit
 
   val name = s"Fetch: $url"
 
@@ -198,7 +198,7 @@ case class Fetch(url: URIish, user: String, refSpec: String = AllRefs)(
 
 case class Pull(url: URIish, user: String)(implicit val conf: GatlingGitConfiguration)
     extends Request {
-  addRemote(initRepo(workTreeDirectory), url)
+  addRemote(initRepo(workTreeDirectory), url): Unit
 
   override def name: String = s"Pull: $url"
 
@@ -238,7 +238,7 @@ case class Push(
     import PimpedGitTransportCommand._
 
     val git = {
-      if (!workTreeDirectory.exists()) addRemote(initRepo(workTreeDirectory), url)
+      if (!workTreeDirectory.exists()) addRemote(initRepo(workTreeDirectory), url): Unitgaa
       Git.open(workTreeDirectory)
     }
     val isSrcDstRefSpec: String => Boolean = _.contains(":") // e.g. HEAD:refs/for/master
