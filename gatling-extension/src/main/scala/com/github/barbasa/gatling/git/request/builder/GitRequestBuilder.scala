@@ -30,8 +30,8 @@ object GitRequestBuilder {
 
 }
 
-case class GitRequestBuilder(request: GitRequestSession)(
-    implicit conf: GatlingGitConfiguration,
+case class GitRequestBuilder(request: GitRequestSession)(implicit
+    conf: GatlingGitConfiguration,
     @deprecated(
       "Use computeChangeId for generating a Change-Id instead of relying on hooks copied on clone",
       since = "1.0.12"
@@ -54,11 +54,11 @@ case class GitRequestBuilder(request: GitRequestSession)(
     } yield {
       val userId = if(user == "") session.userId.toString else user
       command.toLowerCase match {
-        case "clone"        => Clone(url, userId, refSpec)
-        case "fetch"        => Fetch(url, userId, refSpec)
-        case "pull"         => Pull(url, userId)
-        case "push"         => Push(url, userId, refSpec, force = force, computeChangeId = computeChangeId, options = pushOptions.split(",").toList)
-        case "tag"          => Tag(url, userId, refSpec, tag)
+        case "clone" => Clone(url, userId, refSpec)
+        case "fetch" => Fetch(url, userId, refSpec)
+        case "pull"  => Pull(url, userId)
+        case "push"  => Push(url, userId, refSpec, force = force, computeChangeId = computeChangeId, options = pushOptions.split(",").toList)
+        case "tag"   => Tag(url, userId, refSpec, tag)
         case "cleanup-repo" => CleanupRepo(url, userId)
         case _              => InvalidRequest(url, userId)
       }
@@ -66,11 +66,10 @@ case class GitRequestBuilder(request: GitRequestSession)(
   }
 
   private def validateUrl(stringUrl: String): Validation[URIish] = {
-    Try(Success(new URIish(stringUrl))).recover {
-      case e: Exception =>
-        val errorMsg = s"Invalid url: $stringUrl. ${e.getMessage}"
-        println(errorMsg)
-        Failure(errorMsg)
+    Try(Success(new URIish(stringUrl))).recover { case e: Exception =>
+      val errorMsg = s"Invalid url: $stringUrl. ${e.getMessage}"
+      println(errorMsg)
+      Failure(errorMsg)
     }.get
   }
 }
