@@ -49,7 +49,6 @@ ThisBuild / resolvers +=
 
 lazy val root = (project in file("."))
   .enablePlugins(GitVersioning)
-  .enablePlugins(AssemblyPlugin)
   .settings(
     scmInfo := Some(
       ScmInfo(
@@ -67,25 +66,15 @@ lazy val root = (project in file("."))
     name := "gatling-git",
     libraryDependencies ++=
       gatling ++ Seq(
-        "io.gatling"                  % "gatling-core"                % GatlingVersion % Provided,
-        "io.gatling"                  % "gatling-app"                 % GatlingVersion % Provided,
+        "io.gatling"                  % "gatling-core"                % GatlingVersion,
+        "io.gatling"                  % "gatling-app"                 % GatlingVersion,
         "com.google.inject"           % "guice"                       % "5.1.0",
         "commons-io"                  % "commons-io"                  % "2.11.0",
-        "com.typesafe.scala-logging" %% "scala-logging"               % "3.9.5"        % Provided,
+        "com.typesafe.scala-logging" %% "scala-logging"               % "3.9.5",
         "org.eclipse.jgit"            % "org.eclipse.jgit"            % JGitVersion,
         "org.eclipse.jgit"            % "org.eclipse.jgit.ssh.apache" % JGitVersion,
         "org.scalatest"              %% "scalatest"                   % "3.2.15"       % Test
-      ),
-    assembly / assemblyMergeStrategy := {
-      case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-      case x                             => MergeStrategy.first
-    },
-    autoScalaLibrary := false,
-    assembly / artifact := {
-      val art = (assembly / artifact).value
-      art.withClassifier(Some("assembly"))
-    },
-    addArtifact(assembly / artifact, assembly)
+      )
   )
 
 credentials += Credentials(Path.userHome / ".sbt" / "sonatype_credentials")

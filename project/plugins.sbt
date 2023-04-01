@@ -1,4 +1,3 @@
-addSbtPlugin("com.eed3si9n"              % "sbt-assembly" % "0.14.9")
 addSbtPlugin("com.github.sbt"            % "sbt-eclipse"  % "6.0.0")
 addSbtPlugin("com.github.sbt"            % "sbt-git"      % "2.0.1")
 addSbtPlugin("com.jsuereth"              % "sbt-pgp"      % "1.1.0")
