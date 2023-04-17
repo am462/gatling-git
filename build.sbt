@@ -40,6 +40,7 @@ ThisBuild / organization      := "com.gerritforge"
 ThisBuild / organizationName  := "GerritForge"
 ThisBuild / scalaVersion      := "2.13.10"
 ThisBuild / publishMavenStyle := true
+ThisBuild / scalafmtOnCompile := true
 
 val JGitVersion = "5.13.2-20221120.212658-7"
 
