@@ -48,8 +48,8 @@ sealed trait Request {
   def url: URIish
   def user: String
 
-  val repoName                 = url.getPath.split("/").last
-  lazy val workTreeDirectory   = new File(conf.tmpBasePath + s"/$user/$repoName-worktree")
+  val repoName               = url.getPath.split("/").last
+  lazy val workTreeDirectory = new File(conf.tmpBasePath + s"/$user/$repoName-worktree")
 
   private val builder             = new FileRepositoryBuilder
   lazy val repository: Repository = builder.setWorkTree(workTreeDirectory).build()
