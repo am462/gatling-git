@@ -26,6 +26,9 @@ import scala.util.Try
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+import scala.annotation.nowarn
+
+@nowarn("msg=unused value")
 class CommitBuilderSpec extends AnyFlatSpec with BeforeAndAfter with Matchers with GitTestHelpers {
   before {
     FileUtils.deleteDirectory(new File(s"$tempBase/$testUser"))
@@ -51,7 +54,7 @@ class CommitBuilderSpec extends AnyFlatSpec with BeforeAndAfter with Matchers wi
 
   behavior of "CommitBuilder"
 
-  "without prefix parameter" should "create commits without prefix" in {
+  "without prefix parameter" should "create and amend commits with Change-Id without prefix" in {
 
     val commitBuilder = new CommitBuilder(
       fixtures.numberOfFilesPerCommit,
@@ -60,8 +63,19 @@ class CommitBuilderSpec extends AnyFlatSpec with BeforeAndAfter with Matchers wi
       fixtures.defaultPrefixOfCommit
     )
 
-    commitBuilder.commitToRepository(testGitRepo.getRepository)
+    commitBuilder.commitToRepository(testGitRepo.getRepository, computeChangeId = true)
+    val originalCommit = getHeadCommit
+
     getHeadCommit.getFullMessage should startWith("Test commit header - ")
+    val originalChangeId = getHeadCommit.getFooterLines(CommitBuilder.ChangeIdFooterKey)
+
+    commitBuilder.commitToRepository(testGitRepo.getRepository, amend = true)
+    val amendedCommit = getHeadCommit
+    getHeadCommit.getFullMessage should startWith("Amended test commit header - ")
+
+    getHeadCommit.getFooterLines(CommitBuilder.ChangeIdFooterKey) should be(originalChangeId)
+
+    amendedCommit.getId should not be (originalCommit.getId)
   }
 
   "with prefix parameter" should "start with the prefix" in {
