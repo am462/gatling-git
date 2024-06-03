@@ -30,7 +30,8 @@ case class GitRequestSession(
     userId: Expression[String] = StaticValueExpression(""),
     requestName: Expression[String] = StaticValueExpression(""),
     repoDirOverride: Expression[String] = StaticValueExpression(""),
-    createNewPatchset: Expression[Boolean] = False
+    createNewPatchset: Expression[Boolean] = False,
+    resetTo: Expression[String] = StaticValueExpression("")
 )
 
 object GitRequestSession {
@@ -39,6 +40,7 @@ object GitRequestSession {
   val HeadToMasterRefSpec = StaticValueExpression(s"$HEAD:$MasterRef")
   val EmptyTag            = StaticValueExpression("")
   val EmptyRequestName    = StaticValueExpression("")
+  val EmptyResetTo        = StaticValueExpression("")
   val False               = false.expressionSuccess
 
   def cmd(
