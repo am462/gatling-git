@@ -19,6 +19,7 @@ import com.github.barbasa.gatling.git.helper.CommitBuilder
 import com.github.barbasa.gatling.git.request.Request.{addRemote, initRepo}
 import com.typesafe.scalalogging.LazyLogging
 import io.gatling.commons.stats.{Status, KO => GatlingFail, OK => GatlingOK}
+import org.apache.commons.io.FileUtils
 import org.eclipse.jgit.api.ResetCommand.ResetType
 import org.eclipse.jgit.api._
 import org.eclipse.jgit.lib.Constants.MASTER
@@ -138,25 +139,31 @@ object Request {
 }
 
 case class Clone(
-    url: URIish,
-    user: String,
-    ref: String = MasterRef,
-    workTreeDirSuffix: String = System.nanoTime().toString,
-    maybeRequestName: String = EmptyRequestName.value
+                  url: URIish,
+                  user: String,
+                  ref: String = MasterRef,
+                  workTreeDirSuffix: String = System.nanoTime().toString,
+                  maybeRequestName: String = EmptyRequestName.value,
+                  deleteWorkdirOnExit: Boolean = false
 )(implicit
     val conf: GatlingGitConfiguration
 ) extends Request {
 
   def send: GitCommandResponse = {
     import PimpedGitTransportCommand._
+    val workTreeFile = workTreeDirectory(Some(workTreeDirSuffix))
     Git.cloneRepository
       .setAuthenticationMethod(url, cb)
       .setURI(url.toString)
-      .setDirectory(workTreeDirectory(Some(workTreeDirSuffix)))
+      .setDirectory(workTreeFile)
       .setBranch(ref)
       .setProgressMonitor(progressMonitor)
       .setTimeout(conf.gitConfiguration.commandTimeout)
       .call()
+
+    if (deleteWorkdirOnExit) {
+      FileUtils.deleteDirectory(workTreeFile)
+    }
 
     // Clone doesn't have a Result a return value, hence either it works or
     // it will throw an exception

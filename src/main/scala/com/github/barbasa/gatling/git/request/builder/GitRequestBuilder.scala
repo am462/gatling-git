@@ -55,11 +55,12 @@ case class GitRequestBuilder(request: GitRequestSession)(implicit
       repoDirOverride   <- request.repoDirOverride(session)
       createNewPatchset <- request.createNewPatchset(session)
       resetTo           <- request.resetTo(session)
+      deleteWorkdirOnExit <- request.deleteWorkdirOnExit(session)
     } yield {
       val userId               = if (user == "") session.userId.toString else user
       val maybeRepoDirOverride = if (repoDirOverride == "") None else Some(repoDirOverride)
       command.toLowerCase match {
-        case "clone" => Clone(url, userId, refSpec, requestName)
+        case "clone" => Clone(url, userId, refSpec, requestName, deleteWorkdirOnExit = deleteWorkdirOnExit)
         case "fetch" => Fetch(url, userId, refSpec, requestName)
         case "pull"  => Pull(url, userId, requestName, maybeRepoDirOverride)
         case "push" =>

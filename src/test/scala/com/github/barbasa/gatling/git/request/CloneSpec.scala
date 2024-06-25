@@ -63,5 +63,21 @@ class CloneSpec extends AnyFlatSpec with BeforeAndAfter with Matchers with GitTe
     refsList.map(_.getName) should contain(s"refs/heads/$testBranchName")
   }
 
+  it should "cleanup the working directory on exit" in {
+    val suffix = System.nanoTime().toString
+    val response =
+      Clone(
+        new URIish(s"file://${originRepoDirectory}"),
+        s"$testUser",
+        s"$testBranchName",
+        suffix,
+        deleteWorkdirOnExit = true
+      ).send
+    response.status shouldBe OK
+
+    val workTreePath = workTreeDirectory(s"-$suffix")
+    workTreePath.exists() shouldBe false
+  }
+
   override def commandName: String = "Clone"
 }

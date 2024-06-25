@@ -31,7 +31,8 @@ case class GitRequestSession(
     requestName: Expression[String] = StaticValueExpression(""),
     repoDirOverride: Expression[String] = StaticValueExpression(""),
     createNewPatchset: Expression[Boolean] = False,
-    resetTo: Expression[String] = StaticValueExpression("")
+    resetTo: Expression[String] = StaticValueExpression(""),
+    deleteWorkdirOnExit: Expression[Boolean] = False,
 )
 
 object GitRequestSession {
