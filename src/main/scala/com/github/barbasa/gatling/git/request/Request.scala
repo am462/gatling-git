@@ -139,12 +139,12 @@ object Request {
 }
 
 case class Clone(
-                  url: URIish,
-                  user: String,
-                  ref: String = MasterRef,
-                  workTreeDirSuffix: String = System.nanoTime().toString,
-                  maybeRequestName: String = EmptyRequestName.value,
-                  deleteWorkdirOnExit: Boolean = false
+    url: URIish,
+    user: String,
+    ref: String = MasterRef,
+    workTreeDirSuffix: String = System.nanoTime().toString,
+    maybeRequestName: String = EmptyRequestName.value,
+    deleteWorkdirOnExit: Boolean = false
 )(implicit
     val conf: GatlingGitConfiguration
 ) extends Request {
