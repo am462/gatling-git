@@ -25,6 +25,8 @@ import scala.jdk.CollectionConverters._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+import java.nio.file.Files
+
 @nowarn("msg=unused value")
 class CloneSpec extends AnyFlatSpec with BeforeAndAfter with Matchers with GitTestHelpers {
 
@@ -77,6 +79,20 @@ class CloneSpec extends AnyFlatSpec with BeforeAndAfter with Matchers with GitTe
 
     val workTreePath = workTreeDirectory(s"-$suffix")
     workTreePath.exists() shouldBe false
+  }
+
+  it should "should specify target working directory" in {
+    val workDir = Files.createTempDirectory("clonespec")
+    val response = Clone(
+      new URIish(s"file://${originRepoDirectory}"),
+      s"$testUser",
+      s"$testBranchName",
+      repoDirOverride = Some(workDir.toString)
+    ).send
+    response.status shouldBe OK
+
+    val gitWorkDir = JGit.open(workDir.toFile)
+    gitWorkDir.status().call().isClean shouldBe true
   }
 
   override def commandName: String = "Clone"

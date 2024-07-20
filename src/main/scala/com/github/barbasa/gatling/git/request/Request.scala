@@ -144,14 +144,17 @@ case class Clone(
     ref: String = MasterRef,
     workTreeDirSuffix: String = System.nanoTime().toString,
     maybeRequestName: String = EmptyRequestName.value,
-    deleteWorkdirOnExit: Boolean = false
+    deleteWorkdirOnExit: Boolean = false,
+    repoDirOverride: Option[String] = None
 )(implicit
     val conf: GatlingGitConfiguration
 ) extends Request {
 
   def send: GitCommandResponse = {
     import PimpedGitTransportCommand._
-    val workTreeFile = workTreeDirectory(Some(workTreeDirSuffix))
+    val workTreeFile = repoDirOverride
+      .map(new File(_))
+      .getOrElse(workTreeDirectory(Some(workTreeDirSuffix)))
     Git.cloneRepository
       .setAuthenticationMethod(url, cb)
       .setURI(url.toString)

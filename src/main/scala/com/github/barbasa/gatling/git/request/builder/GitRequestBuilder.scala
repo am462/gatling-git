@@ -61,7 +61,14 @@ case class GitRequestBuilder(request: GitRequestSession)(implicit
       val maybeRepoDirOverride = if (repoDirOverride == "") None else Some(repoDirOverride)
       command.toLowerCase match {
         case "clone" =>
-          Clone(url, userId, refSpec, requestName, deleteWorkdirOnExit = deleteWorkdirOnExit)
+          Clone(
+            url,
+            userId,
+            refSpec,
+            requestName,
+            deleteWorkdirOnExit = deleteWorkdirOnExit,
+            repoDirOverride = maybeRepoDirOverride
+          )
         case "fetch" => Fetch(url, userId, refSpec, requestName)
         case "pull"  => Pull(url, userId, requestName, maybeRepoDirOverride)
         case "push" =>
