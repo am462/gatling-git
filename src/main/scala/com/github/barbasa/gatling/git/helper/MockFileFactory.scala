@@ -36,7 +36,7 @@ object MockFiles {
   abstract class AbstractMockFile(contentLength: Int) extends MockFile {
     override def content = generateContent(contentLength)
     override def name =
-      generateRandomString(10).filterNot(_.isLetterOrDigit) + System.nanoTime() + ".java"
+      generateRandomString(10).filter(_.isLetterOrDigit) + System.nanoTime() + ".java"
 
     def generateRandomString(length: Int): String =
       (1 to length)
