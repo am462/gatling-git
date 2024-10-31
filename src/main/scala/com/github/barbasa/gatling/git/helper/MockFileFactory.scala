@@ -16,8 +16,7 @@ package com.github.barbasa.gatling.git.helper
 
 import java.io._
 
-import scala.util.Random
-import scala.util.Random.alphanumeric
+import scala.util.Random.{ alphanumeric, nextInt }
 
 object MockFiles {
 
@@ -44,7 +43,7 @@ object MockFiles {
         .grouped(120)
         .map(line =>
           loremIpsumText
-            .drop(Random.nextInt(loremIpsumTextLen - line.length))
+            .drop(nextInt(loremIpsumTextLen - line.length))
             .take(line.length)
         )
         .mkString("\n")
