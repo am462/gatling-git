@@ -39,12 +39,6 @@ class CommitBuilder(numFiles: Int, minContentLength: Int, maxContentLength: Int,
       amend: Boolean = false
   ) = {
     val git = new Git(repository)
-    Vector.range(0, numFiles).foreach { _ =>
-      val contentLength: Int = minContentLength + random
-        .nextInt((maxContentLength - minContentLength) + 1)
-      val file: MockFile = MockFileFactory.create(TextFileType, contentLength)
-      file.save(repository.getWorkTree.toString)
-    }
 
     val existingBranches = git.branchList.call.asScala
       .map(_.getName.drop(R_HEADS.length))
@@ -53,7 +47,19 @@ class CommitBuilder(numFiles: Int, minContentLength: Int, maxContentLength: Int,
     val existingBranch = branch.filter(existingBranches.contains)
     existingBranch.foreach(git.checkout.setName(_).call)
 
-    git.add.addFilepattern(".").call()
+    val fileNames = Vector.range(0, numFiles).map { _ =>
+      val contentLength: Int = minContentLength + random
+        .nextInt((maxContentLength - minContentLength) + 1)
+      val file: MockFile = MockFileFactory.create(TextFileType, contentLength)
+      file.save(repository.getWorkTree.toString): Unit
+      file.name
+    }
+
+    val gitAdd = git.add()
+    fileNames.foreach(fileName => gitAdd.addFilepattern(fileName))
+    if (fileNames.nonEmpty) {
+      gitAdd.call()
+    }
 
     val uniqueSuffix  = s"${LocalDateTime.now}"
     val commitCommand = git.commit()
