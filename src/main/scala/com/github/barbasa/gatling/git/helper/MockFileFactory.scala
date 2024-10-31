@@ -16,7 +16,7 @@ package com.github.barbasa.gatling.git.helper
 
 import java.io._
 
-import scala.util.Random.{ alphanumeric, nextInt }
+import scala.util.Random
 
 object MockFiles {
 
@@ -36,14 +36,14 @@ object MockFiles {
   abstract class AbstractMockFile(contentLength: Int) extends MockFile {
     override def content = generateContent(contentLength)
     override def name =
-      alphanumeric.take(10).mkString + System.nanoTime() + ".java"
+      Random.alphanumeric.take(10).mkString + System.nanoTime() + ".java"
 
     def generateRandomString(length: Int): String =
       (1 to length)
         .grouped(120)
         .map(line =>
           loremIpsumText
-            .drop(nextInt(loremIpsumTextLen - line.length))
+            .drop(Random.nextInt(loremIpsumTextLen - line.length))
             .take(line.length)
         )
         .mkString("\n")
