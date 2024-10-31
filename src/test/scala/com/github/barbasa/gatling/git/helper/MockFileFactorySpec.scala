@@ -30,7 +30,7 @@ class MockFileFactorySpec extends AnyFlatSpec with Matchers {
 
     val fileNameParts = fileNameWithExtension.split("\\.")
 
-    fileNameParts(0).filterNot(_.isLetterOrDigit) should be ("")
+    fileNameParts(0).filterNot(_.isLetterOrDigit) should be("")
     fileNameParts(1) should be("java")
 
   }
