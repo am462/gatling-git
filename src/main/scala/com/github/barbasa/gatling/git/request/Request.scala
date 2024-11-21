@@ -29,12 +29,13 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import org.eclipse.jgit.transport._
 import org.eclipse.jgit.transport.sshd.SshdSessionFactory
 
-import java.io.{File, PrintWriter}
+import java.io.{File, IOException, PrintWriter}
 import java.nio.file.{Path, Paths}
 import java.time.LocalDateTime
 import java.util.{List => JavaList}
 import scala.jdk.CollectionConverters._
 import scala.reflect.io.Directory
+import scala.util.{Failure, Try}
 
 sealed trait Request {
 
@@ -145,7 +146,8 @@ case class Clone(
     workTreeDirSuffix: String = System.nanoTime().toString,
     maybeRequestName: String = EmptyRequestName.value,
     deleteWorkdirOnExit: Boolean = false,
-    repoDirOverride: Option[String] = None
+    repoDirOverride: Option[String] = None,
+    failOnDeleteErrors: Boolean = true
 )(implicit
     val conf: GatlingGitConfiguration
 ) extends Request {
@@ -165,7 +167,12 @@ case class Clone(
       .call()
 
     if (deleteWorkdirOnExit) {
-      FileUtils.deleteDirectory(workTreeFile)
+      Try(
+        FileUtils.deleteDirectory(workTreeFile)
+      ) match {
+        case Failure(e: IOException) if failOnDeleteErrors => throw e
+        case _                                             =>
+      }
     }
 
     // Clone doesn't have a Result a return value, hence either it works or

@@ -32,7 +32,8 @@ case class GitRequestSession(
     repoDirOverride: Expression[String] = StaticValueExpression(""),
     createNewPatchset: Expression[Boolean] = False,
     resetTo: Expression[String] = StaticValueExpression(""),
-    deleteWorkdirOnExit: Expression[Boolean] = False
+    deleteWorkdirOnExit: Expression[Boolean] = False,
+    failOnDeleteErrors: Expression[Boolean] = True
 )
 
 object GitRequestSession {
@@ -43,6 +44,7 @@ object GitRequestSession {
   val EmptyRequestName    = StaticValueExpression("")
   val EmptyResetTo        = StaticValueExpression("")
   val False               = false.expressionSuccess
+  val True                = true.expressionSuccess
 
   def cmd(
       cmd: String,
